@@ -3,17 +3,21 @@
 
 import { useState } from "react";
 import { ChevronUp, ChevronDown } from "lucide-react";
-import { TransactionAction } from "@/lib/types";
+import {
+  TransactionAction,
+  Market,
+  SortDirection,
+  TransactionSortField,
+} from "@/lib/types";
 import Select from "./ui/Select";
 import MonthTabs, { Month } from "./ui/MonthTabs";
 import TransactionActionBadge from "./ui/TransactionActionBadge";
+import { mockTransactions } from "@/lib/mockData";
 
-type Market = "TW" | "US" | "ALL";
-type SortField = "code" | "date" | "transactionAction" | "netAmount";
-type SortDirection = "asc" | "desc";
+type SortField = TransactionSortField;
 
 export default function TransactionsView() {
-  const [market, setMarket] = useState<Market>("ALL");
+  const [market, setMarket] = useState<Market | "ALL">("ALL");
   const [transactionAction, setTransactionAction] = useState<
     TransactionAction | "ALL"
   >("ALL");
@@ -215,54 +219,50 @@ export default function TransactionsView() {
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b border-zinc-100 hover:bg-zinc-50 transition-colors">
-                <td className="p-4">
-                  <div className="text-sm text-zinc-800">2025/10/28</div>
-                </td>
-                <td className="p-4">
-                  <div className="font-medium text-zinc-900">VOO</div>
-                  <TransactionActionBadge action="BUY" />
-                </td>
-                <td className="p-4 text-center">
-                  <div className="text-sm text-zinc-800">1</div>
-                </td>
-                <td className="p-4 text-right">
-                  <div className="font-medium text-zinc-900">652.09</div>
-                  <div className="text-sm text-zinc-600">USD</div>
-                </td>
-              </tr>
-              <tr className="border-b border-zinc-100 hover:bg-zinc-50 transition-colors">
-                <td className="p-4">
-                  <div className="text-sm text-zinc-800">2025/10/15</div>
-                </td>
-                <td className="p-4">
-                  <div className="font-medium text-zinc-900">2330</div>
-                  <TransactionActionBadge action="SELL" />
-                </td>
-                <td className="p-4 text-center">
-                  <div className="text-sm text-zinc-800">10</div>
-                </td>
-                <td className="p-4 text-right">
-                  <div className="font-medium text-zinc-900">5,850</div>
-                  <div className="text-sm text-zinc-600">TWD</div>
-                </td>
-              </tr>
-              <tr className="border-b border-zinc-100 hover:bg-zinc-50 transition-colors">
-                <td className="p-4">
-                  <div className="text-sm text-zinc-800">2025/09/20</div>
-                </td>
-                <td className="p-4">
-                  <div className="font-medium text-zinc-900">VOO</div>
-                  <TransactionActionBadge action="CASH_DIV" />
-                </td>
-                <td className="p-4 text-center">
-                  <div className="text-sm text-zinc-400">—</div>
-                </td>
-                <td className="p-4 text-right">
-                  <div className="font-medium text-green-600">+12.50</div>
-                  <div className="text-sm text-zinc-600">USD</div>
-                </td>
-              </tr>
+              {mockTransactions.map((txn) => {
+                return (
+                  <tr
+                    key={txn.id}
+                    className="border-b border-zinc-100 hover:bg-zinc-50 transition-colors"
+                  >
+                    <td className="p-4">
+                      <div className="text-sm text-zinc-800">{txn.date}</div>
+                    </td>
+                    <td className="p-4">
+                      <div className="font-medium text-zinc-900">
+                        {txn.code}
+                      </div>
+                      <TransactionActionBadge action={txn.action} />
+                    </td>
+                    <td className="p-4 text-center">
+                      <div
+                        className={`text-sm ${
+                          txn.shares > 0 ? "text-zinc-800" : "text-zinc-400"
+                        }`}
+                      >
+                        {txn.shares > 0 ? txn.shares : "—"}
+                      </div>
+                    </td>
+                    <td className="p-4 text-right">
+                      <div
+                        className={`font-medium ${
+                          txn.action === "SELL" || txn.action === "CASH_DIV"
+                            ? "text-green-600"
+                            : "text-zinc-900"
+                        }`}
+                      >
+                        {txn.action === "SELL" || txn.action === "CASH_DIV"
+                          ? "+"
+                          : ""}
+                        {txn.netAmount.toLocaleString()}
+                      </div>
+                      <div className="text-xs text-zinc-600">
+                        {txn.currency}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
