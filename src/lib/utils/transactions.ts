@@ -4,6 +4,8 @@ import {
   Market,
   SortDirection,
   TransactionSortField,
+  Holding,
+  HoldingsSortField,
 } from "@/lib/types";
 
 /**
@@ -76,3 +78,57 @@ export function sortTransactions(
 
   return sorted;
 }
+
+/**
+ * Filter holdings based on criteria
+ */
+export function filterHoldings(
+  holdings: Holding[],
+  filters: {
+    market?: Market | "ALL";
+  }
+): Holding[] {
+  let filtered = [...holdings];
+
+  if (filters.market && filters.market !== "ALL") {
+    filtered = filtered.filter((h) => h.market === filters.market);
+  }
+
+  return filtered;
+}
+
+/**
+ * Sort holdings
+ */
+export function sortHoldings(
+  holdings: Holding[],
+  sortField: HoldingsSortField,
+  sortDirection: SortDirection
+): Holding[] {
+  const sorted = [...holdings].sort((a, b) => {
+    let comparison = 0;
+
+    switch (sortField) {
+      case "code":
+        comparison = a.code.localeCompare(b.code);
+        break;
+      case "shares":
+        comparison = a.shares - b.shares;
+        break;
+      case "marketValue":
+        comparison = a.marketValue - b.marketValue;
+        break;
+      case "unrealizedPnL":
+        comparison = a.unrealizedPnL - b.unrealizedPnL;
+        break;
+      case "return":
+        comparison = a.returnPercent - b.returnPercent;
+        break;
+    }
+
+    return sortDirection === "asc" ? comparison : -comparison;
+  });
+
+  return sorted;
+}
+

@@ -66,6 +66,47 @@ export interface Transaction {
 
 /**
  * ============================================================================
+ * Holding Types - Position Data 持倉資料
+ * ============================================================================
+ */
+
+/**
+ * Holding - Current Position Status 目前持倉狀態
+ *
+ * @description
+ * Position status calculated from all Transactions
+ * Uses Weighted Average Cost method
+ * 從所有 Transactions 計算而來的持倉狀態
+ * 使用加權平均成本法 (Weighted Average Cost)
+ *
+ */
+export interface Holding {
+  // Basic information
+  market: Market; // Market
+  code: string; // Stock code
+  name: string; // Stock name
+  currency: Currency; // Currency
+
+  // Position information
+  shares: number; // 目前持股數量 Current number of shares
+  avgCost: number; // 平均成本（單價）Average cost (per share) = costBasis / shares
+  costBasis: number; // 成本基礎（總成本） Cost basis (total cost) = Σ(buy amount + fees)
+
+  // Market value information
+  currentPrice: number; // 目前價格（單價）Current price (per share) - updated from API
+  marketValue: number; // 市值 Market value = shares × currentPrice
+
+  // P&L information
+  unrealizedPnL: number; // 未實現損益 Unrealized P&L = marketValue - costBasis
+  returnPercent: number; // 報酬率 Return % = (currentPrice - avgCost) / avgCost × 100
+
+  // Time information
+  firstBuyDate?: string; // 首次買入日期 First purchase date
+  lastTransactionDate?: string; // 最後交易日期 Last transaction date
+}
+
+/**
+ * ============================================================================
  * Filter & Sort Types - UI State Management
  * ============================================================================
  */

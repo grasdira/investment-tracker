@@ -16,8 +16,6 @@ import TransactionActionBadge from "./ui/TransactionActionBadge";
 import { filterTransactions, sortTransactions } from "@/lib/utils/transactions";
 import { mockTransactions } from "@/lib/mockData";
 
-type SortField = TransactionSortField;
-
 export default function TransactionsView() {
   // data state
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -25,7 +23,7 @@ export default function TransactionsView() {
   const [error, setError] = useState<string | null>(null);
 
   // sort state
-  const [sortField, setSortField] = useState<SortField>("date");
+  const [sortField, setSortField] = useState<TransactionSortField>("date");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
 
   // filter state
@@ -60,7 +58,7 @@ export default function TransactionsView() {
     label: year.toString(),
   }));
 
-  const handleSort = (field: SortField) => {
+  const handleSort = (field: TransactionSortField) => {
     if (sortField === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
@@ -69,7 +67,7 @@ export default function TransactionsView() {
     }
   };
 
-  const renderSortIndicator = (field: SortField) => {
+  const renderSortIndicator = (field: TransactionSortField) => {
     if (sortField !== field) return null;
     return sortDirection === "asc" ? (
       <ChevronUp className="inline w-4 h-4 text-amber-500" />

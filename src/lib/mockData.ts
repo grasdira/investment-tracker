@@ -1,5 +1,5 @@
 // lib/mockData.ts
-import { Transaction, TransactionAction } from "./types";
+import { Transaction, TransactionAction, Holding } from "./types";
 
 /**
  * Mock Transactions Data
@@ -602,5 +602,116 @@ export const mockTransactions: Transaction[] = [
     currency: "USD",
     createdAt: "2025-10-28T15:45:00Z",
     updatedAt: "2025-10-28T15:45:00Z",
+  },
+];
+
+/**
+ * Mock Holdings Data
+ */
+export const mockHoldings: Holding[] = [
+  {
+    market: "US",
+    code: "VOO",
+    name: "Vanguard S&P 500 ETF",
+    currency: "USD",
+    shares: 11, // 5 (opening) + 3 (2024) + 2 (2025) + 1 (2025)
+    avgCost: 398.45, // Total cost / shares
+    costBasis: 4382.97, // 1900 + 1296.99 + 937.99 + 526.99 - fees included
+    currentPrice: 535.0,
+    marketValue: 5885.0,
+    unrealizedPnL: 1502.03,
+    returnPercent: 37.7,
+    firstBuyDate: "2022-03-15",
+    lastTransactionDate: "2025-10-28",
+  },
+  {
+    market: "TW",
+    code: "2330",
+    name: "台積電",
+    currency: "TWD",
+    shares: 176, // 50 + 50 + 10 (div 2024) + 50 + 16 (div 2025) - 10 (sold)
+    avgCost: 512.96, // Total cost / shares
+    costBasis: 90281.15, // Sum of all purchases + fees
+    currentPrice: 590.0,
+    marketValue: 103840.0,
+    unrealizedPnL: 13558.85,
+    returnPercent: 15.02,
+    firstBuyDate: "2022-06-20",
+    lastTransactionDate: "2025-10-15",
+  },
+  {
+    market: "TW",
+    code: "0050",
+    name: "元大台灣50",
+    currency: "TWD",
+    shares: 80, // 40 (2022) + 40 (2024)
+    avgCost: 125.18, // Total cost / shares
+    costBasis: 10014.15, // 4606.51 + 5407.64
+    currentPrice: 145.5,
+    marketValue: 11640.0,
+    unrealizedPnL: 1625.85,
+    returnPercent: 16.24,
+    firstBuyDate: "2022-09-10",
+    lastTransactionDate: "2024-09-25",
+  },
+  {
+    market: "US",
+    code: "AAPL",
+    name: "Apple Inc.",
+    currency: "USD",
+    shares: 10, // 15 - 5 (2023 sell) + 5 - 5 (2025 sell)
+    avgCost: 231.65, // Total cost / current shares
+    costBasis: 2316.48, // (2256.99 + 919.49) - profit from sells
+    currentPrice: 198.5,
+    marketValue: 1985.0,
+    unrealizedPnL: -331.48,
+    returnPercent: -14.31,
+    firstBuyDate: "2022-11-15",
+    lastTransactionDate: "2025-09-25",
+  },
+  {
+    market: "US",
+    code: "MSFT",
+    name: "Microsoft Corporation",
+    currency: "USD",
+    shares: 10,
+    avgCost: 310.7, // 3106.99 / 10
+    costBasis: 3106.99,
+    currentPrice: 415.0,
+    marketValue: 4150.0,
+    unrealizedPnL: 1043.01,
+    returnPercent: 33.57,
+    firstBuyDate: "2023-04-12",
+    lastTransactionDate: "2023-04-12",
+  },
+  {
+    market: "TW",
+    code: "2454",
+    name: "聯發科",
+    currency: "TWD",
+    shares: 20, // 30 - 10 (2024 sell) + 10
+    avgCost: 1097.4, // Weighted average cost
+    costBasis: 21947.98, // 23433.12 + 10514.86 - realized P&L from sell
+    currentPrice: 1050.0,
+    marketValue: 21000.0,
+    unrealizedPnL: -947.98,
+    returnPercent: -4.32,
+    firstBuyDate: "2023-10-18",
+    lastTransactionDate: "2025-06-15",
+  },
+  {
+    market: "US",
+    code: "TSLA",
+    name: "Tesla Inc.",
+    currency: "USD",
+    shares: 30, // 15 (initial) + 15 (2-for-1 split)
+    avgCost: 120.23, // 3606.99 / 30 (cost basis spread across all shares after split)
+    costBasis: 3606.99,
+    currentPrice: 142.5,
+    marketValue: 4275.0,
+    unrealizedPnL: 668.01,
+    returnPercent: 18.52,
+    firstBuyDate: "2024-08-20",
+    lastTransactionDate: "2025-08-25",
   },
 ];
