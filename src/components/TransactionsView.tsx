@@ -1,28 +1,38 @@
 // src/components/TransactionsView.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { ChevronUp, ChevronDown } from "lucide-react";
 import {
   TransactionAction,
   Market,
   SortDirection,
   TransactionSortField,
+  Transaction,
 } from "@/lib/types";
 import Select from "./ui/Select";
 import MonthTabs, { Month } from "./ui/MonthTabs";
 import TransactionActionBadge from "./ui/TransactionActionBadge";
+import { filterTransactions, sortTransactions } from "@/lib/utils/transactions";
 import { mockTransactions } from "@/lib/mockData";
 
 type SortField = TransactionSortField;
 
 export default function TransactionsView() {
+  // data state
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // sort state
+  const [sortField, setSortField] = useState<SortField>("date");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+
+  // filter state
   const [market, setMarket] = useState<Market | "ALL">("ALL");
   const [transactionAction, setTransactionAction] = useState<
     TransactionAction | "ALL"
   >("ALL");
-  const [sortField, setSortField] = useState<SortField>("date");
-  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [selectedYear, setSelectedYear] = useState<string>("2025");
   const [selectedMonth, setSelectedMonth] = useState<Month>("ALL");
 
@@ -67,6 +77,70 @@ export default function TransactionsView() {
       <ChevronDown className="inline w-4 h-4 text-amber-500" />
     );
   };
+
+  // Fetch transactions on mount
+  useEffect(() => {
+    loadTransacionData();
+  }, []);
+
+  // filter and sort data
+  const filteredTransactions = useMemo(() => {
+    if (transactions.length === 0) return [];
+
+    const result = filterTransactions(transactions, {
+      market,
+      action: transactionAction,
+      year: selectedYear,
+      month: selectedMonth,
+    });
+
+    return sortTransactions(result, sortField, sortDirection);
+  }, [
+    transactions,
+    market,
+    transactionAction,
+    selectedYear,
+    selectedMonth,
+    sortField,
+    sortDirection,
+  ]);
+
+  const loadTransacionData = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const data = mockTransactions;
+      setTransactions(data);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to load transactions"
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="w-full flex items-center justify-center py-12">
+        <div className="text-zinc-600">Loading transactions...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full flex flex-col items-center justify-center py-12">
+        <div className="text-red-600 mb-4">{error}</div>
+        <button
+          onClick={loadTransacionData}
+          className="px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -198,71 +272,67 @@ export default function TransactionsView() {
                 <th className="py-3 px-4 text-center text-sm font-semibold text-zinc-700">
                   Shares
                 </th>
-                <th className="py-3 px-4 text-right text-sm font-semibold">
+                <th className="py-3 px-4 text-center text-sm font-semibold text-zinc-700">
                   <div className="flex flex-col gap-1 items-end">
-                    <span
-                      className={`${
-                        sortField === "netAmount"
-                          ? "text-amber-500"
-                          : "text-zinc-700 hover:text-zinc-900"
-                      } cursor-pointer`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSort("netAmount");
-                      }}
-                    >
-                      Net Amount {renderSortIndicator("netAmount")}
-                    </span>
-                    <span className="text-zinc-700">Currency</span>
+                    <span>Net Amount</span>
+                    <span>Currency</span>
                   </div>
                 </th>
               </tr>
             </thead>
             <tbody>
-              {mockTransactions.map((txn) => {
-                return (
-                  <tr
-                    key={txn.id}
-                    className="border-b border-zinc-100 hover:bg-zinc-50 transition-colors"
-                  >
-                    <td className="p-4">
-                      <div className="text-sm text-zinc-800">{txn.date}</div>
-                    </td>
-                    <td className="p-4">
-                      <div className="font-medium text-zinc-900">
-                        {txn.code}
-                      </div>
-                      <TransactionActionBadge action={txn.action} />
-                    </td>
-                    <td className="p-4 text-center">
-                      <div
-                        className={`text-sm ${
-                          txn.shares > 0 ? "text-zinc-800" : "text-zinc-400"
-                        }`}
-                      >
-                        {txn.shares > 0 ? txn.shares : "—"}
-                      </div>
-                    </td>
-                    <td className="p-4 text-right">
-                      <div
-                        className={`font-medium ${
-                          txn.action === "SELL" || txn.action === "CASH_DIV"
-                            ? "text-green-600"
-                            : "text-zinc-900"
-                        }`}
-                      >
-                        {txn.action === "SELL" || txn.action === "CASH_DIV"
-                          ? "+"
-                          : ""}
-                        {txn.netAmount.toLocaleString()}
-                      </div>
-                      <div className="text-xs text-zinc-600">
-                        {txn.currency}
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
+              {filteredTransactions.length > 0 ? (
+                filteredTransactions.map((txn) => {
+                  return (
+                    <tr
+                      key={txn.id}
+                      className="border-b border-zinc-100 hover:bg-zinc-50 transition-colors"
+                    >
+                      <td className="p-4">
+                        <div className="text-sm text-zinc-800">{txn.date}</div>
+                      </td>
+                      <td className="p-4">
+                        <div className="font-medium text-zinc-900">
+                          {txn.code}
+                        </div>
+                        <TransactionActionBadge action={txn.action} />
+                      </td>
+                      <td className="p-4 text-center">
+                        <div
+                          className={`text-sm ${
+                            txn.shares > 0 ? "text-zinc-800" : "text-zinc-400"
+                          }`}
+                        >
+                          {txn.shares > 0 ? txn.shares : "—"}
+                        </div>
+                      </td>
+                      <td className="p-4 text-right">
+                        <div
+                          className={`font-medium ${
+                            txn.action === "SELL" || txn.action === "CASH_DIV"
+                              ? "text-green-600"
+                              : "text-zinc-900"
+                          }`}
+                        >
+                          {txn.action === "SELL" || txn.action === "CASH_DIV"
+                            ? "+"
+                            : ""}
+                          {txn.netAmount.toLocaleString()}
+                        </div>
+                        <div className="text-xs text-zinc-600">
+                          {txn.currency}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td align="center" colSpan={4} className="py-5">
+                    No available result
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

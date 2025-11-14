@@ -73,11 +73,8 @@ export interface Transaction {
 /**
  * Transaction Sort Field
  */
-export type TransactionSortField =
-  | "code"
-  | "date"
-  | "transactionAction"
-  | "netAmount";
+export type TransactionSortField = "code" | "date" | "transactionAction";
+// | "netAmount";
 
 /**
  * Holdings Sort Field
