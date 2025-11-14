@@ -65,7 +65,7 @@ export default function AddTransactionModal({
         <div className="flex items-center justify-end gap-3 p-6 border-t border-zinc-200 dark:border-zinc-800">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-colors cursor-pointer"
+            className="px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300/80 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-colors cursor-pointer"
           >
             Cancel
           </button>
@@ -75,7 +75,7 @@ export default function AddTransactionModal({
               console.log("Submitting transaction...");
               onClose();
             }}
-            className="px-4 py-2 text-sm font-medium text-white bg-amber-500 hover:bg-amber-600 rounded-md transition-colors cursor-pointer"
+            className="px-4 py-2 text-sm font-medium text-white bg-amber-500 dark:bg-amber-500/70 hover:bg-amber-600 dark:hover:bg-amber-600/70 rounded-md transition-colors cursor-pointer"
           >
             Add Transaction
           </button>

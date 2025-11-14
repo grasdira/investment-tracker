@@ -41,9 +41,9 @@ export default function HoldingsView() {
   const renderSortIndicator = (field: HoldingsSortField) => {
     if (sortField !== field) return null;
     return sortDirection === "asc" ? (
-      <ChevronUp className="inline w-4 h-4 text-amber-500" />
+      <ChevronUp className="inline w-4 h-4 text-amber-500 dark:text-amber-500/70" />
     ) : (
-      <ChevronDown className="inline w-4 h-4 text-amber-500" />
+      <ChevronDown className="inline w-4 h-4 text-amber-500 dark:text-amber-500/70" />
     );
   };
 
@@ -93,7 +93,7 @@ export default function HoldingsView() {
         <div className="text-red-600 mb-4">{error}</div>
         <button
           onClick={loadHoldings}
-          className="px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600"
+          className="px-4 py-2 bg-amber-500 dark:bg-amber-500/70 text-white rounded-md hover:bg-amber-600 dark:hover:bg-amber-600/70"
         >
           Retry
         </button>
@@ -104,8 +104,8 @@ export default function HoldingsView() {
   return (
     <div className="w-full">
       {/* Header Section */}
-      <div className="flex flex-col items-start gap-2 w-full py-4 border-b border-zinc-200">
-        <h1 className="text-2xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
+      <div className="flex flex-col items-start gap-2 w-full py-4 border-b border-zinc-200 dark:border-zinc-800">
+        <h1 className="text-2xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-300/80">
           Hi, Ruth
         </h1>
 
@@ -113,7 +113,9 @@ export default function HoldingsView() {
           Total Market Value
         </div>
 
-        <div className="text-3xl font-bold">700,000</div>
+        <div className="text-3xl font-bold text-black dark:text-zinc-300">
+          700,000
+        </div>
 
         <div className="flex w-full overflow-hidden rounded-sm">
           <div className="bg-amber-500/70 w-2/3 text-center text-white/90 py-1 text-xs font-medium transition-all">
@@ -148,12 +150,12 @@ export default function HoldingsView() {
         <div className="overflow-x-auto">
           <table className="table-fixed w-full border-collapse">
             <thead>
-              <tr className="border-b border-zinc-200 select-none">
+              <tr className="border-b border-zinc-200 dark:border-zinc-800 select-none">
                 <th
                   className={`py-3 px-4 text-sm font-semibold ${
                     sortField === "code"
-                      ? "text-amber-500"
-                      : "text-zinc-700 hover:text-zinc-900"
+                      ? "text-amber-500 dark:text-amber-500/70"
+                      : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-500"
                   } cursor-pointer`}
                   onClick={() => handleSort("code")}
                 >
@@ -163,8 +165,8 @@ export default function HoldingsView() {
                   <span
                     className={`${
                       sortField === "shares"
-                        ? "text-amber-500"
-                        : "text-zinc-700 hover:text-zinc-900"
+                        ? "text-amber-500 dark:text-amber-500/70"
+                        : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-500"
                     } cursor-pointer`}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -177,8 +179,8 @@ export default function HoldingsView() {
                   <span
                     className={`${
                       sortField === "marketValue"
-                        ? "text-amber-500"
-                        : "text-zinc-700 hover:text-zinc-900"
+                        ? "text-amber-500 dark:text-amber-500/70"
+                        : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-500"
                     } cursor-pointer`}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -192,8 +194,8 @@ export default function HoldingsView() {
                   <span
                     className={`${
                       sortField === "unrealizedPnL"
-                        ? "text-amber-500"
-                        : "text-zinc-700 hover:text-zinc-900"
+                        ? "text-amber-500 dark:text-amber-500/70"
+                        : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-500"
                     } cursor-pointer`}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -206,8 +208,8 @@ export default function HoldingsView() {
                   <span
                     className={`${
                       sortField === "return"
-                        ? "text-amber-500"
-                        : "text-zinc-700 hover:text-zinc-900"
+                        ? "text-amber-500 dark:text-amber-500/70"
+                        : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-500"
                     } cursor-pointer`}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -224,11 +226,13 @@ export default function HoldingsView() {
                 filteredHoldings.map((holding) => {
                   return (
                     <tr
-                      className="border-b border-zinc-100 hover:bg-zinc-50 transition-colors"
+                      className="border-b border-zinc-100 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900/50 transition-colors"
                       key={holding.code}
                     >
                       <td className="p-4 text-center">
-                        <div className="font-semibold">{holding.code}</div>
+                        <div className="font-semibold text-black dark:text-zinc-300">
+                          {holding.code}
+                        </div>
                         <div className="text-xs text-zinc-500">
                           {holding.name}
                         </div>
@@ -237,7 +241,9 @@ export default function HoldingsView() {
                         </div>
                       </td>
                       <td className="p-4 text-right">
-                        <div className="font-medium">{holding.shares}</div>
+                        <div className="font-medium text-black dark:text-zinc-300">
+                          {holding.shares}
+                        </div>
                         <div className="text-sm text-zinc-600">{`${holding.marketValue.toLocaleString()} ${
                           holding.currency
                         }`}</div>

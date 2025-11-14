@@ -70,9 +70,9 @@ export default function TransactionsView() {
   const renderSortIndicator = (field: TransactionSortField) => {
     if (sortField !== field) return null;
     return sortDirection === "asc" ? (
-      <ChevronUp className="inline w-4 h-4 text-amber-500" />
+      <ChevronUp className="inline w-4 h-4 text-amber-500 dark:text-amber-500/70" />
     ) : (
-      <ChevronDown className="inline w-4 h-4 text-amber-500" />
+      <ChevronDown className="inline w-4 h-4 text-amber-500 dark:text-amber-500/70" />
     );
   };
 
@@ -132,7 +132,7 @@ export default function TransactionsView() {
         <div className="text-red-600 mb-4">{error}</div>
         <button
           onClick={loadTransacionData}
-          className="px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600"
+          className="px-4 py-2 bg-amber-500 dark:bg-amber-500/70 text-white rounded-md hover:bg-amber-600 dark:hover:bg-amber-600/70"
         >
           Retry
         </button>
@@ -143,8 +143,8 @@ export default function TransactionsView() {
   return (
     <>
       {/* Header Section */}
-      <div className="flex flex-col items-start gap-3 w-full py-4 border-b border-zinc-200">
-        <h1 className="text-2xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
+      <div className="flex flex-col items-start gap-3 w-full py-4 border-b border-zinc-200 dark:border-zinc-800">
+        <h1 className="text-2xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-300/80">
           Transaction History
         </h1>
 
@@ -154,7 +154,7 @@ export default function TransactionsView() {
             <div className="text-zinc-600 dark:text-zinc-400 text-xs">
               Cash Invested
             </div>
-            <div className="text-xl font-bold text-black dark:text-zinc-50">
+            <div className="text-xl font-bold text-black dark:text-zinc-300/80">
               652,090
             </div>
           </div>
@@ -226,12 +226,12 @@ export default function TransactionsView() {
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
-              <tr className="border-b border-zinc-200 select-none">
+              <tr className="border-b border-zinc-200 dark:border-zinc-800 select-none">
                 <th
                   className={`py-3 px-4 text-left text-sm font-semibold ${
                     sortField === "date"
-                      ? "text-amber-500"
-                      : "text-zinc-700 hover:text-zinc-900"
+                      ? "text-amber-500 dark:text-amber-500/70"
+                      : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-500"
                   } cursor-pointer`}
                   onClick={() => handleSort("date")}
                 >
@@ -242,8 +242,8 @@ export default function TransactionsView() {
                     <span
                       className={`${
                         sortField === "code"
-                          ? "text-amber-500"
-                          : "text-zinc-700 hover:text-zinc-900"
+                          ? "text-amber-500 dark:text-amber-500/70"
+                          : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-500"
                       } cursor-pointer`}
                       onClick={(e) => {
                         e.stopPropagation();
@@ -255,8 +255,8 @@ export default function TransactionsView() {
                     <span
                       className={`${
                         sortField === "transactionAction"
-                          ? "text-amber-500"
-                          : "text-zinc-700 hover:text-zinc-900"
+                          ? "text-amber-500 dark:text-amber-500/70"
+                          : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-500"
                       } cursor-pointer`}
                       onClick={(e) => {
                         e.stopPropagation();
@@ -267,10 +267,10 @@ export default function TransactionsView() {
                     </span>
                   </div>
                 </th>
-                <th className="py-3 px-4 text-center text-sm font-semibold text-zinc-700">
+                <th className="py-3 px-4 text-center text-sm font-semibold text-zinc-600 dark:text-zinc-400">
                   Shares
                 </th>
-                <th className="py-3 px-4 text-center text-sm font-semibold text-zinc-700">
+                <th className="py-3 px-4 text-center text-sm font-semibold text-zinc-600 dark:text-zinc-400">
                   <div className="flex flex-col gap-1 items-end">
                     <span>Net Amount</span>
                     <span>Currency</span>
@@ -284,13 +284,15 @@ export default function TransactionsView() {
                   return (
                     <tr
                       key={txn.id}
-                      className="border-b border-zinc-100 hover:bg-zinc-50 transition-colors"
+                      className="border-b border-zinc-100 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900/50 transition-colors"
                     >
                       <td className="p-4">
-                        <div className="text-sm text-zinc-800">{txn.date}</div>
+                        <div className="text-sm text-zinc-800 dark:text-zinc-400">
+                          {txn.date}
+                        </div>
                       </td>
                       <td className="p-4">
-                        <div className="font-medium text-zinc-900">
+                        <div className="font-medium text-zinc-900 dark:text-zinc-300/80">
                           {txn.code}
                         </div>
                         <TransactionActionBadge action={txn.action} />
@@ -298,7 +300,9 @@ export default function TransactionsView() {
                       <td className="p-4 text-center">
                         <div
                           className={`text-sm ${
-                            txn.shares > 0 ? "text-zinc-800" : "text-zinc-400"
+                            txn.shares > 0
+                              ? "text-zinc-800 dark:text-zinc-400"
+                              : "text-zinc-400 dark:text-zinc-700"
                           }`}
                         >
                           {txn.shares > 0 ? txn.shares : "—"}
@@ -309,7 +313,7 @@ export default function TransactionsView() {
                           className={`font-medium ${
                             txn.action === "SELL" || txn.action === "CASH_DIV"
                               ? "text-green-600"
-                              : "text-zinc-900"
+                              : "text-zinc-900 dark:text-zinc-300/80"
                           }`}
                         >
                           {txn.action === "SELL" || txn.action === "CASH_DIV"

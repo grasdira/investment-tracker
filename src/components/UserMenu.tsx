@@ -47,7 +47,7 @@ export default function UserMenu() {
       {/* User Avatar Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-center w-8 h-8 rounded-full bg-amber-500 hover:bg-amber-600 text-white font-medium transition-colors cursor-pointer"
+        className="flex items-center justify-center w-8 h-8 rounded-full bg-amber-500 dark:bg-amber-500/70 hover:bg-amber-600 dark:hover:bg-amber-600/70 text-white font-medium transition-colors cursor-pointer"
       >
         {/* TODO: Replace with actual user image from OAuth */}
         <User className="w-4 h-4" />
@@ -69,7 +69,7 @@ export default function UserMenu() {
           {/* Menu Items */}
           <button
             onClick={handleSync}
-            className="w-full flex items-center gap-3 px-4 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-2 text-sm text-zinc-700 dark:text-zinc-300/80 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
           >
             <RefreshCw className="w-4 h-4" />
             Sync
@@ -77,7 +77,7 @@ export default function UserMenu() {
 
           <button
             onClick={handleSettings}
-            className="w-full flex items-center gap-3 px-4 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-2 text-sm text-zinc-700 dark:text-zinc-300/80 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
           >
             <Settings className="w-4 h-4" />
             Settings
@@ -87,7 +87,7 @@ export default function UserMenu() {
 
           <button
             onClick={handleSignOut}
-            className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
             Sign Out

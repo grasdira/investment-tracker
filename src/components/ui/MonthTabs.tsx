@@ -79,10 +79,10 @@ export default function MonthTabs({
           <button
             key={month.value}
             onClick={() => onChange(month.value)}
-            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors select-none cursor-pointer ${
+            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors select-none cursor-pointer dark:bg-zinc-900 dark:hover:bg-zinc-800 ${
               selectedMonth === month.value
-                ? "bg-amber-500 text-white"
-                : "bg-zinc-100 text-zinc-700 hover:bg-zinc-200"
+                ? "bg-amber-500 text-white dark:text-amber-500"
+                : "bg-white border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300/80 hover:bg-zinc-100"
             }`}
           >
             {month.label}
