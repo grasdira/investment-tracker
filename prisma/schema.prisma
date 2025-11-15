@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,8 +7,119 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ==================== Enums ====================
+
+// 交易類型
+enum TransactionType {
+  BUY              // 買入
+  SELL             // 賣出
+  DIVIDEND         // 現金股利
+  STOCK_DIVIDEND   // 股票股利
+  STOCK_SPLIT      // 股票分割
+}
+
+// 幣別（可擴充）
+enum Currency {
+  TWD              // 台幣
+  USD              // 美元
+}
+
+// 市場（可擴充）
+enum Market {
+  TW               // 台灣
+  US               // 美國
+}
+
+// 帳戶類型（可擴充）
+enum AccountType {
+  CASH             // 現金帳戶
+}
+
+// ==================== Models ====================
+
+// 使用者資料表
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id            String       @id @default(uuid())
+  email         String       @unique
+  googleId      String?      @unique @map("google_id")
+  name          String?
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+  
+  portfolios    Portfolio[]
+  
+  @@map("users")
+}
+
+// 投資組合
+model Portfolio {
+  id              String       @id @default(uuid())
+  userId          String       @map("user_id")
+  
+  // 基本資訊
+  name            String                                // "富邦證券 - 台股"
+  currency        Currency     @default(TWD)
+  market          Market?     
+  
+  // 券商資訊
+  broker          String?                               // "富邦證券", "IB", "嘉信"
+  accountNumber   String?      @map("account_number")  // 帳號後四碼（隱私）
+  accountType     AccountType? @default(CASH) @map("account_type")
+  
+  // 狀態
+  isActive        Boolean      @default(true)           // 是否啟用
+  
+  // 備註
+  description     String?                               // 自訂備註
+  
+  // 時間戳
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+  
+  // 關聯
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions    Transaction[]
+  holdings        Holding[]
+  
+  @@map("portfolios")
+}
+
+// 交易記錄
+model Transaction {
+  id            String           @id @default(uuid())
+  portfolioId   String           @map("portfolio_id")
+  type          TransactionType  
+  symbol        String           // 股票代號，例如：'2330.TW'
+  quantity      Decimal          @db.Decimal(15, 6)
+  price         Decimal          @db.Decimal(15, 2)
+  fee           Decimal          @default(0) @db.Decimal(15, 2)
+  tax           Decimal          @default(0) @db.Decimal(15, 2)
+  date          DateTime
+  note          String?
+  createdAt     DateTime         @default(now()) @map("created_at")
+  updatedAt     DateTime         @updatedAt @map("updated_at")
+  
+  portfolio     Portfolio        @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  
+  @@index([portfolioId])
+  @@index([symbol])
+  @@index([date])
+  @@index([type])
+  @@map("transactions")
+}
+
+// 當前持股
+model Holding {
+  id            String       @id @default(uuid())
+  portfolioId   String       @map("portfolio_id")
+  symbol        String
+  quantity      Decimal      @db.Decimal(15, 6)
+  avgCost       Decimal      @map("avg_cost") @db.Decimal(15, 2)
+  totalCost     Decimal      @map("total_cost") @db.Decimal(15, 2)
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+  
+  portfolio     Portfolio    @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  
+  @@unique([portfolioId, symbol])
+  @@map("holdings")
 }
